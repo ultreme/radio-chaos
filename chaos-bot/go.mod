@@ -1,4 +1,4 @@
-module ultre.me/radio-chaos/bot
+module ultre.me/radio-chaos/chaos-bot
 
 go 1.14
 
