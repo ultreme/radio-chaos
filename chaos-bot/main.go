@@ -116,9 +116,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, msg)
 	case m.Content == "!il-est-pas-quelle-heure":
 		out := fmt.Sprintf("%d%d:%d%d",
+			rand.Intn(3),
 			rand.Intn(10),
-			rand.Intn(10),
-			rand.Intn(10),
+			rand.Intn(6),
 			rand.Intn(10),
 		)
 		s.ChannelMessageSend(m.ChannelID, out)
