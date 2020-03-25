@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
@@ -84,12 +85,21 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		s.ChannelMessageSend(m.ChannelID, msg)
 	case m.Content == "!help":
-		commands := []string{"!history", "!manfred", "!il-est-pas-quelle-heure", "!discord", "!radio", "!zoom", "!coucou", "!podcast", "!calendrier", "!ultreme", "!soundcloud"}
-		sort.Strings(commands)
-		out := ""
-		for _, command := range commands {
-			out += fmt.Sprintf("- %s\n", command)
+		commands := []string{
+			"!history",
+			"!manfred",
+			"!il-est-pas-quelle-heure",
+			"!discord",
+			"!radio",
+			"!zoom",
+			"!coucou",
+			"!podcast",
+			"!calendrier",
+			"!ultreme",
+			"!soundcloud",
 		}
+		sort.Strings(commands)
+		out := strings.Join(commands, ", ")
 		s.ChannelMessageSend(m.ChannelID, out)
 	case m.Content == "!soundcloud":
 		s.ChannelMessageSend(m.ChannelID, "https://soundcloud.com/ultreme-reporters")
@@ -98,11 +108,22 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case m.Content == "!calendrier":
 		s.ChannelMessageSend(m.ChannelID, "https://calendrier.ultre.me")
 	case m.Content == "!manfred":
-		s.ChannelMessageSend(m.ChannelID, "c'est ce qu'elles disent toutes")
+		msgs := []string{
+			"c'est ce qu'elles disent toutes",
+			"plus tu cours moins vite, moins t'avances plus vite",
+		}
+		msg := msgs[rand.Intn(len(msgs))]
+		s.ChannelMessageSend(m.ChannelID, msg)
 	case m.Content == "!il-est-pas-quelle-heure":
-		s.ChannelMessageSend(m.ChannelID, "23:42")
+		out := fmt.Sprintf("%d%d:%d%d",
+			rand.Intn(10),
+			rand.Intn(10),
+			rand.Intn(10),
+			rand.Intn(10),
+		)
+		s.ChannelMessageSend(m.ChannelID, out)
 	case m.Content == "!discord":
-		s.ChannelMessageSend(m.ChannelID, "https://ultre.me/disord")
+		s.ChannelMessageSend(m.ChannelID, "https://ultre.me/discord")
 	case m.Content == "!radio":
 		s.ChannelMessageSend(m.ChannelID, "http://salutcestcool.com/radio")
 	case m.Content == "!zoom":
@@ -111,6 +132,16 @@ Sur internet/via une appli: https://zoom.us/j/129255108
 Depuis un téléphone: 01.70.37.22.46, puis taper 129 255 108#
 `)
 	case m.Content == "!coucou":
-		s.ChannelMessageSend(m.ChannelID, "SALUT ÇA VA !?")
+		msgs := []string{
+			"SALUT ÇA VA !?",
+			"bonjour à toutes et à tous",
+			"bonjour",
+			"enchanté de vous rencontrer",
+			"coucou",
+			"salut",
+			"yo",
+		}
+		msg := msgs[rand.Intn(len(msgs))]
+		s.ChannelMessageSend(m.ChannelID, msg)
 	}
 }
