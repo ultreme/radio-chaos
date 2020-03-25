@@ -93,6 +93,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			"!radio",
 			"!zoom",
 			"!coucou",
+			"!pouet",
 			"!podcast",
 			"!calendrier",
 			"!ultreme",
@@ -107,6 +108,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "https://ultre.me")
 	case m.Content == "!calendrier":
 		s.ChannelMessageSend(m.ChannelID, "https://calendrier.ultre.me")
+	case m.Content == "!pouet":
+		s.ChannelMessageSend(m.ChannelID, "https://calendrier.ultre.me/2019/pouet/")
 	case m.Content == "!manfred":
 		msgs := []string{
 			"c'est ce qu'elles disent toutes",
