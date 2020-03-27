@@ -131,8 +131,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "http://salutcestcool.com/radio")
 	case m.Content == "!zoom":
 		s.ChannelMessageSend(m.ChannelID, `
-Sur internet/via une appli: https://zoom.us/j/129255108
-Depuis un téléphone: 01.70.37.22.46, puis taper 129 255 108#
+Sur internet/via une appli: https://zoom.us/j/988093214
+Depuis un téléphone: 01.70.37.22.46, puis taper 988 093 214#
 `)
 	case m.Content == "!coucou":
 		msgs := []string{
