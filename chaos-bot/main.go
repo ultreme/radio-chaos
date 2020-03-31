@@ -129,6 +129,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "https://ultre.me/discord")
 	case m.Content == "!radio":
 		s.ChannelMessageSend(m.ChannelID, "http://salutcestcool.com/radio")
+	case m.Content == "!ucpj":
+		s.ChannelMessageSend(m.ChannelID, "https://airtable.com/shrIAoOICeY54JOoY")
 	case m.Content == "!zoom":
 		s.ChannelMessageSend(m.ChannelID, `
 Sur internet/via une appli: https://zoom.us/j/988093214
