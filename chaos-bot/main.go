@@ -96,6 +96,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			"!pouet",
 			"!podcast",
 			"!calendrier",
+			"!bite",
+			"!ucpj",
 			"!ultreme",
 			"!soundcloud",
 		}
