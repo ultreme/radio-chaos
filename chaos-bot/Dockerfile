@@ -11,4 +11,5 @@ RUN             go install
 # minimalist runtime
 FROM alpine:3.11
 COPY            --from=builder /go/bin/chaos-bot /bin/
+COPY            replies.yml .
 ENTRYPOINT      ["/bin/chaos-bot"]
