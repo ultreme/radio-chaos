@@ -31,7 +31,6 @@ func init() {
 		"!recettator":              doRecettator,
 	}
 	// FIXME: !pause 5min
-	// FIXME: !bot-stats
 	// FIXME: !pipotron
 	// FIXME: !blague
 
@@ -111,7 +110,7 @@ func doBite(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	switch m.Author.Username {
 	case "manfred":
 		s.ChannelMessageSend(m.ChannelID, "B"+strings.Repeat("=", rand.Intn(10)+42)+"D")
-	case "":
+	case "sassou":
 		s.ChannelMessageSend(m.ChannelID, "{(.)}")
 	default:
 		s.ChannelMessageSend(m.ChannelID, "B"+strings.Repeat("=", rand.Intn(42)+1)+"D")
