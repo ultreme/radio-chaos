@@ -11,22 +11,29 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/hako/durafmt"
+	"moul.io/godev"
 )
 
 func main() {
-	var token string
+	var (
+		token   string
+		devMode bool
+		debug   bool
+	)
+
 	flag.StringVar(&token, "t", "", "Bot Token")
-	// FIXME: --dev (only in pv)
-	// FIXME: --debug
+	flag.BoolVar(&devMode, "dev", false, "Only reply in PV")
+	flag.BoolVar(&debug, "debug", false, "Verbose")
 	flag.Parse()
 
-	err := run(token)
+	err := run(token, devMode, debug)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 }
 
-func run(token string) error {
+func run(token string, devMode bool, debug bool) error {
+	log.Printf("starting bot, devMode=%v, debug=%v", devMode, debug)
 	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return err
@@ -34,6 +41,8 @@ func run(token string) error {
 
 	b := bot{
 		startedAt: time.Now(),
+		devMode:   devMode,
+		debug:     debug,
 	}
 	commands["!info"] = b.doInfo
 
@@ -57,11 +66,19 @@ type bot struct {
 	seenMessages int
 	seenCommands int
 	seenErrors   int
+	devMode      bool
+	debug        bool
 }
 
 func (b *bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// avoid loop
 	if m.Author.ID == s.State.User.ID {
+		return
+	}
+	if b.debug {
+		log.Println(godev.JSON(m))
+	}
+	if b.devMode && m.GuildID != "" {
 		return
 	}
 
@@ -72,7 +89,11 @@ func (b *bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) 
 	}
 	b.seenCommands++
 
-	log.Printf("channel: %q, author: %s#%s, input: %q", m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Content)
+	channel := m.ChannelID
+	if m.GuildID == "" {
+		channel = "PV"
+	}
+	log.Printf("channel: %q, author: %s#%s, input: %q", channel, m.Author.Username, m.Author.Discriminator, m.Content)
 
 	err := command(s, m)
 	if err != nil {

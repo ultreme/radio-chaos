@@ -62,7 +62,12 @@ func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	if err != nil {
 		return err
 	}
-	s.ChannelMessageSend(m.ChannelID, "```markdown\n"+markdown+"\n```")
+	msg, err := s.ChannelMessageSend(m.ChannelID, "```markdown\n"+markdown+"\n```")
+	if err != nil {
+		return err
+	}
+	s.MessageReactionAdd(m.ChannelID, msg.ID, "😋")
+	s.MessageReactionAdd(m.ChannelID, msg.ID, "🤮")
 	return nil
 }
 
