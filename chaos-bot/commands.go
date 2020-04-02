@@ -12,6 +12,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	yaml "gopkg.in/yaml.v2"
+	"ultre.me/recettator"
 )
 
 type commandFunc func(s *discordgo.Session, m *discordgo.MessageCreate) error
@@ -27,6 +28,7 @@ func init() {
 		"!help":                    doHelp,
 		"!il-est-pas-quelle-heure": doIlEstPasQuelleHeure,
 		"!bite":                    doBite,
+		"!recettator":              doRecettator,
 	}
 	// FIXME: !pause 5min
 	// FIXME: !bot-stats
@@ -49,6 +51,21 @@ func init() {
 	for key, msgs := range repliesYaml {
 		commands["!"+key] = genericRepliesYaml(msgs)
 	}
+}
+
+func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	rctt := recettator.New(int64(rand.Intn(1000))) // FIXME: make it overridable by arg
+	rctt.SetSettings(recettator.Settings{
+		MainIngredients:      uint64(rand.Intn(2) + 1),
+		SecondaryIngredients: uint64(rand.Intn(2) + 1),
+		Steps:                uint64(rand.Intn(4) + 3),
+	})
+	markdown, err := rctt.Markdown()
+	if err != nil {
+		return err
+	}
+	s.ChannelMessageSend(m.ChannelID, "```markdown\n"+markdown+"\n```")
+	return nil
 }
 
 func doHistory(s *discordgo.Session, m *discordgo.MessageCreate) error {
@@ -78,7 +95,6 @@ func doHistory(s *discordgo.Session, m *discordgo.MessageCreate) error {
 }
 
 func doHelp(s *discordgo.Session, m *discordgo.MessageCreate) error {
-	s.ChannelMessageSend(m.ChannelID, "coucou")
 	keys := make([]string, len(commands))
 	i := 0
 	for key := range commands {

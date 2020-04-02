@@ -54,6 +54,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	log.Printf("channel: %q, author: %s#%s, input: %q", m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Content)
+
 	err := command(s, m)
 	if err != nil {
 		sendError(s, m, err)

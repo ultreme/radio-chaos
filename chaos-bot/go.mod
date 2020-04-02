@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/bwmarrin/discordgo v0.20.2
+	github.com/kr/pretty v0.1.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8
-	moul.io/godev v1.6.0
+	ultre.me/recettator v0.4.0
 )
