@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -68,6 +69,7 @@ type bot struct {
 	seenErrors   int
 	devMode      bool
 	debug        bool
+	lock         sync.Mutex
 }
 
 func (b *bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -89,12 +91,20 @@ func (b *bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) 
 	}
 	b.seenCommands++
 
+	b.lock.Lock()
+	defer b.lock.Unlock()
+
 	channel := m.ChannelID
 	if m.GuildID == "" {
 		channel = "PV"
 	}
 	log.Printf("channel: %q, author: %s#%s, input: %q", channel, m.Author.Username, m.Author.Discriminator, m.Content)
 
+	defer func() {
+		if r := recover(); r != nil {
+			sendError(s, m, fmt.Errorf("panic: %v", r))
+		}
+	}()
 	err := command(s, m)
 	if err != nil {
 		b.seenErrors++

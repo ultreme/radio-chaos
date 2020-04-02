@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	hpeg "github.com/ultreme/histoire-pour-enfant-generator"
 	yaml "gopkg.in/yaml.v2"
 	"ultre.me/recettator"
 )
@@ -29,6 +30,7 @@ func init() {
 		"!il-est-pas-quelle-heure": doIlEstPasQuelleHeure,
 		"!bite":                    doBite,
 		"!recettator":              doRecettator,
+		"!histoire-pour-enfant":    doHistoirePourEnfant,
 	}
 	// FIXME: !pause 5min
 	// FIXME: !pipotron
@@ -51,6 +53,24 @@ func init() {
 	}
 }
 
+func doHistoirePourEnfant(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	story := hpeg.NewStory()
+
+	for i := 0; i < 4; i++ {
+		story.AddElement(hpeg.NewAnimal())
+	}
+
+	lines := story.Tell()
+	lines[0] = "# " + lines[0]
+	markdown := strings.Join(lines, "\n")
+	msg, err := sendMarkdown(s, m, markdown)
+	if err != nil {
+		return err
+	}
+	s.MessageReactionAdd(m.ChannelID, msg.ID, "👶")
+	return nil
+}
+
 func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	rctt := recettator.New(int64(rand.Intn(1000))) // FIXME: make it overridable by arg
 	rctt.SetSettings(recettator.Settings{
@@ -62,7 +82,7 @@ func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	if err != nil {
 		return err
 	}
-	msg, err := s.ChannelMessageSend(m.ChannelID, "```markdown\n"+markdown+"\n```")
+	msg, err := sendMarkdown(s, m, markdown)
 	if err != nil {
 		return err
 	}
