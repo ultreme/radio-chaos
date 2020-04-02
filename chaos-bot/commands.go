@@ -32,7 +32,6 @@ func init() {
 	}
 	// FIXME: !pause 5min
 	// FIXME: !bot-stats
-	// FIXME: !recettator
 	// FIXME: !pipotron
 	// FIXME: !blague
 
@@ -109,7 +108,14 @@ func doHelp(s *discordgo.Session, m *discordgo.MessageCreate) error {
 }
 
 func doBite(s *discordgo.Session, m *discordgo.MessageCreate) error {
-	s.ChannelMessageSend(m.ChannelID, "B"+strings.Repeat("=", rand.Intn(42)+1)+"D")
+	switch m.Author.Username {
+	case "manfred":
+		s.ChannelMessageSend(m.ChannelID, "B"+strings.Repeat("=", rand.Intn(10)+42)+"D")
+	case "":
+		s.ChannelMessageSend(m.ChannelID, "{(.)}")
+	default:
+		s.ChannelMessageSend(m.ChannelID, "B"+strings.Repeat("=", rand.Intn(42)+1)+"D")
+	}
 	return nil
 }
 
