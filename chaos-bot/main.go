@@ -86,7 +86,7 @@ func (b *bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) 
 
 	b.seenMessages++
 	command, found := commands[m.Content] // FIXME: split the content and support args
-	if !found {
+	if !found || command == nil {
 		return
 	}
 	b.seenCommands++

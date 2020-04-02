@@ -11,8 +11,11 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/gohugoio/hugo/common/maps"
 	hpeg "github.com/ultreme/histoire-pour-enfant-generator"
 	yaml "gopkg.in/yaml.v2"
+	"moul.io/pipotron/dict"
+	"moul.io/pipotron/pipotron"
 	"ultre.me/recettator"
 )
 
@@ -50,6 +53,38 @@ func init() {
 	}
 	for key, msgs := range repliesYaml {
 		commands["!"+key] = genericRepliesYaml(msgs)
+	}
+
+	//
+	// pipotron
+	//
+	dicts := []string{"proverbe-africain", "marabout", "reve", "whatsapp-message-in-case-of-pandemic", "question-baleze-raw", "prenom-compose", "moijaime", "insulte-mignone", "horoscope", "fuu", "excuse-a-2-balles", "bingo-winner", "asv", "accords", "project-idea"}
+	for _, dictName := range dicts {
+		commands["!"+dictName] = genericPipotron(dictName)
+	}
+}
+
+// see https://github.com/moul/pipotron
+func genericPipotron(name string) commandFunc {
+	dictFile, err := dict.Box.Find(name + ".yml")
+	if err != nil {
+		log.Println("warn: %v", err)
+		return nil
+	}
+	var context pipotron.Context
+	err = yaml.Unmarshal(dictFile, &context.Dict)
+	if err != nil {
+		log.Println("warn: %v", err)
+		return nil
+	}
+	context.Scratch = maps.NewScratch()
+	return func(s *discordgo.Session, m *discordgo.MessageCreate) error {
+		out, err := pipotron.Generate(&context)
+		if err != nil {
+			return err
+		}
+		s.ChannelMessageSend(m.ChannelID, out)
+		return nil
 	}
 }
 
@@ -118,11 +153,12 @@ func doHistory(s *discordgo.Session, m *discordgo.MessageCreate) error {
 }
 
 func doHelp(s *discordgo.Session, m *discordgo.MessageCreate) error {
-	keys := make([]string, len(commands))
-	i := 0
-	for key := range commands {
-		keys[i] = key
-		i++
+	keys := []string{}
+	for key, fn := range commands {
+		if fn == nil {
+			continue
+		}
+		keys = append(keys, key)
 	}
 
 	sort.Strings(keys)
