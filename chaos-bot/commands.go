@@ -59,6 +59,7 @@ func init() {
 	// pipotron
 	//
 	dicts := []string{"proverbe-africain", "marabout", "reve", "whatsapp-message-in-case-of-pandemic", "question-baleze-raw", "prenom-compose", "moijaime", "insulte-mignone", "horoscope", "fuu", "excuse-a-2-balles", "bingo-winner", "asv", "accords", "project-idea"}
+	//fmt.Println(godev.PrettyJSON(dict.Box.List()))
 	for _, dictName := range dicts {
 		commands["!"+dictName] = genericPipotron(dictName)
 	}
@@ -68,13 +69,13 @@ func init() {
 func genericPipotron(name string) commandFunc {
 	dictFile, err := dict.Box.Find(name + ".yml")
 	if err != nil {
-		log.Println("warn: %v", err)
+		log.Printf("warn: %v", err)
 		return nil
 	}
 	var context pipotron.Context
 	err = yaml.Unmarshal(dictFile, &context.Dict)
 	if err != nil {
-		log.Println("warn: %v", err)
+		log.Printf("warn: %v", err)
 		return nil
 	}
 	context.Scratch = maps.NewScratch()
