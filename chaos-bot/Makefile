@@ -12,3 +12,7 @@ run: install
 docker:
 	docker build -t ultreme/chaos-bot .
 	docker run -it --rm ultreme/chaos-bot -t $(DISCORD_TOKEN) $(RUN_OPTS)
+
+bumpdeps:
+	go get -u ./...
+	go mod tidy
