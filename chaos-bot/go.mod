@@ -18,7 +18,7 @@ require (
 	gopkg.in/yaml.v2 v2.2.8
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 	moul.io/godev v1.6.0
-	moul.io/pipotron v1.6.0
+	moul.io/pipotron v1.6.1-0.20200403174046-2ebdb9418dbe
 	ultre.me/recettator v0.4.0
 )
 

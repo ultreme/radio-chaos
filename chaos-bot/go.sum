@@ -549,8 +549,8 @@ honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWh
 moul.io/godev v1.3.0/go.mod h1:xsV3hXF1E9vy2T/1b1CLjSImJ1/nQeTfqTDhJHhJCWg=
 moul.io/godev v1.6.0 h1:ms1aI6o9k+PhmMdTR7Aw5iDHPu56xtnmrUgdfLKPspc=
 moul.io/godev v1.6.0/go.mod h1:5lgSpI1oH7xWpLl2Ew/Nsgk8DiNM6FzN9WV9+lgW8RQ=
-moul.io/pipotron v1.6.0 h1:WNimRjcK3T2HN5Ej4T1t/sMVdyfAaGUnL9eQ6UukZDA=
-moul.io/pipotron v1.6.0/go.mod h1:rJ2583VCJpb/uHiSB7VzGoSnrDw1m0Erd8PGgdJmDYc=
+moul.io/pipotron v1.6.1-0.20200403174046-2ebdb9418dbe h1:dKfRu//4u+vqEnTj80RbDEX3CC2/4f8WL3UpwRhW+M0=
+moul.io/pipotron v1.6.1-0.20200403174046-2ebdb9418dbe/go.mod h1:rJ2583VCJpb/uHiSB7VzGoSnrDw1m0Erd8PGgdJmDYc=
 moul.io/srand v1.4.0 h1:r5ZMiWDN0ni0lTV7KzJR/jx0K7GivJYW5WaXmufgeik=
 moul.io/srand v1.4.0/go.mod h1:P2uaZB+GFstFNo8sEj6/U8FRV1n25kD0LLckFpJ+qvc=
 pack.ag/amqp v0.8.0/go.mod h1:4/cbmt4EJXSKlG6LCfWHoqmN0uFdy5i/+YFz+fTfhV4=
