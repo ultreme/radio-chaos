@@ -3,15 +3,15 @@ RUN_OPTS ?= --dev --debug
 include .env
 export sed 's/=.*//' .env
 
+run: install
+	chaos-bot $(RUN_OPTS) discord-bot --discord-token="$(DISCORD_TOKEN)"
+
 install:
 	go install
 
-run: install
-	chaos-bot -t $(DISCORD_TOKEN) $(RUN_OPTS)
-
 docker:
 	docker build -t ultreme/chaos-bot .
-	docker run -it --rm ultreme/chaos-bot -t $(DISCORD_TOKEN) $(RUN_OPTS)
+	docker run -it --rm ultreme/chaos-bot $(RUN_OPTS) discord-bot --discord-token="$(DISCORD_TOKEN)"
 
 bumpdeps:
 	go get -u ./...

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -12,28 +13,39 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/hako/durafmt"
+	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
 )
 
 func main() {
 	var (
-		token   string
-		devMode bool
-		debug   bool
+		rootFlagSet    = flag.NewFlagSet("chaos-bot", flag.ExitOnError)
+		devMode        = rootFlagSet.Bool("dev", false, "only reply in PV")
+		debug          = rootFlagSet.Bool("debug", false, "verbose")
+		discordFlagSet = flag.NewFlagSet("discord", flag.ExitOnError)
+		discordToken   = discordFlagSet.String("discord-token", "", "Discord Bot Token")
 	)
 
-	flag.StringVar(&token, "t", "", "Bot Token")
-	flag.BoolVar(&devMode, "dev", false, "Only reply in PV")
-	flag.BoolVar(&debug, "debug", false, "Verbose")
-	flag.Parse()
+	discordBot := &ffcli.Command{
+		Name:    "discord-bot",
+		FlagSet: discordFlagSet,
+		Exec: func(_ context.Context, _ []string) error {
+			return discordBot(*discordToken, *devMode, *debug)
+		},
+	}
 
-	err := run(token, devMode, debug)
+	root := &ffcli.Command{
+		FlagSet:     rootFlagSet,
+		Subcommands: []*ffcli.Command{discordBot},
+	}
+
+	err := root.ParseAndRun(context.Background(), os.Args[1:])
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 }
 
-func run(token string, devMode bool, debug bool) error {
+func discordBot(token string, devMode bool, debug bool) error {
 	log.Printf("starting bot, devMode=%v, debug=%v", devMode, debug)
 	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
