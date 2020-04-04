@@ -16,3 +16,6 @@ docker:
 bumpdeps:
 	go get -u ./...
 	go mod tidy
+
+tidy:
+	go mod tidy

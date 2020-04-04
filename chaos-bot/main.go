@@ -17,6 +17,8 @@ import (
 	"moul.io/godev"
 )
 
+const manfredChannel = "691928992495960124"
+
 func main() {
 	var (
 		rootFlagSet    = flag.NewFlagSet("chaos-bot", flag.ExitOnError)
@@ -51,6 +53,9 @@ func discordBot(token string, devMode bool, debug bool) error {
 	if err != nil {
 		return err
 	}
+
+	hostname, _ := os.Hostname()
+	dg.ChannelMessageSend(manfredChannel, fmt.Sprintf("COUCOU JE VIENS DE BOOT (%s)", hostname))
 
 	b := bot{
 		startedAt: time.Now(),
