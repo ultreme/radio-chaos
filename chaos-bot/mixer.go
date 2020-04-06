@@ -12,8 +12,12 @@ import (
 	"moul.io/godev"
 )
 
-func mixerBotCmd() error {
-	sio, err := newSIOClient("mixer")
+func mixerBotCmd(devMode bool) error {
+	name := "mixer"
+	if devMode {
+		name += "-dev"
+	}
+	sio, err := newSIOClient(name)
 	if err != nil {
 		return err
 	}

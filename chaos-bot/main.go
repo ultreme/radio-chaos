@@ -33,7 +33,7 @@ func main() {
 		Name:    "mixer-bot",
 		FlagSet: mixerFlagSet,
 		Exec: func(_ context.Context, _ []string) error {
-			return mixerBotCmd()
+			return mixerBotCmd(*devMode)
 		},
 	}
 

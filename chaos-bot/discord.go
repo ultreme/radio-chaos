@@ -48,7 +48,11 @@ func discordBotCmd(token string, devMode bool, debug bool) error {
 	}
 
 	{ // SOCKET IO
-		sio, err := newSIOClient("mixer")
+		name := "discord"
+		if devMode {
+			name += "-dev"
+		}
+		sio, err := newSIOClient(name)
 		if err != nil {
 			return err
 		}
