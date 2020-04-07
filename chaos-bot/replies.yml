@@ -65,6 +65,9 @@ mirjana:
 fenetre:
 - "never ends"
 
+fond_de_radio:
+- "http://radio.casse-tete.solutions/bg-192.aac"
+
 compliment:
 - "tu es plus joli(e) que le ciel et la mer"
 - "ton odeur est une pyramide d'Égypte"
