@@ -14,6 +14,7 @@ import (
 	"github.com/gohugoio/hugo/common/maps"
 	hpeg "github.com/ultreme/histoire-pour-enfant-generator"
 	yaml "gopkg.in/yaml.v2"
+	"moul.io/moulsay/moulsay"
 	"moul.io/pipotron/dict"
 	"moul.io/pipotron/pipotron"
 	"ultre.me/recettator"
@@ -34,6 +35,7 @@ func init() {
 		"!bite":                    doBite,
 		"!recettator":              doRecettator,
 		"!histoire-pour-enfant":    doHistoirePourEnfant,
+		"!moulsay":                 doMoulsay,
 	}
 	// FIXME: !pause 5min
 	// FIXME: !pipotron
@@ -165,6 +167,21 @@ func doHelp(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	sort.Strings(keys)
 	out := strings.Join(keys, ", ")
 	s.ChannelMessageSend(m.ChannelID, out)
+	return nil
+}
+
+func doMoulsay(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	content := strings.Split(m.Content, " ")
+	say := strings.Join(content[1:], " ")
+	say = strings.TrimSpace(say)
+	if say == "" {
+		return nil
+	}
+	out, err := moulsay.Say(say, 60)
+	if err != nil {
+		return err
+	}
+	sendBlock(s, m, out)
 	return nil
 }
 
