@@ -15,6 +15,7 @@ docker:
 
 bumpdeps:
 	go get -u ./...
+	go get moul.io/pipotron@master
 	go mod tidy
 
 tidy:
