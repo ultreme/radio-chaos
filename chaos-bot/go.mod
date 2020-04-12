@@ -22,7 +22,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 	moul.io/godev v1.6.0
 	moul.io/moulsay v1.3.0
-	moul.io/pipotron v1.8.1-0.20200412152812-13c4d4c6ecbe
+	moul.io/pipotron v1.8.1-0.20200412182155-beaae14ff719
 	ultre.me/recettator v0.4.0
 )
 
