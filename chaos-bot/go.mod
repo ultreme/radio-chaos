@@ -17,7 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.5.0 // indirect
 	github.com/ultreme/histoire-pour-enfant-generator v0.0.0-20200402084311-66b2cd0d2da6
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71 // indirect
-	golang.org/x/sys v0.0.0-20200409092240-59c9f1ba88fa // indirect
+	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
 	gopkg.in/yaml.v2 v2.2.8
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 	moul.io/godev v1.6.0
