@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -15,6 +16,7 @@ import (
 	hpeg "github.com/ultreme/histoire-pour-enfant-generator"
 	yaml "gopkg.in/yaml.v2"
 	"moul.io/moulsay/moulsay"
+	ntw "moul.io/number-to-words"
 	"moul.io/pipotron/dict"
 	"moul.io/pipotron/pipotron"
 	"ultre.me/recettator"
@@ -36,6 +38,7 @@ func init() {
 		"!recettator":              doRecettator,
 		"!histoire-pour-enfant":    doHistoirePourEnfant,
 		"!moulsay":                 doMoulsay,
+		"!ntw":                     doNtw,
 	}
 	// FIXME: !pause 5min
 	// FIXME: !pipotron
@@ -91,6 +94,20 @@ func genericPipotron(name string) commandFunc {
 	}
 }
 
+func doNtw(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	content := strings.Split(m.Content, " ")
+	if len(content) < 2 {
+		return nil
+	}
+	input, err := strconv.Atoi(content[1])
+	if err != nil {
+		return err
+	}
+	out := ntw.IntegerToFrFr(input)
+	s.ChannelMessageSend(m.ChannelID, out)
+	return nil
+}
+
 func doHistoirePourEnfant(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	story := hpeg.NewStory()
 
@@ -112,8 +129,8 @@ func doHistoirePourEnfant(s *discordgo.Session, m *discordgo.MessageCreate) erro
 func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	rctt := recettator.New(int64(rand.Intn(1000))) // FIXME: make it overridable by arg
 	rctt.SetSettings(recettator.Settings{
-		MainIngredients:      uint64(rand.Intn(2) + 1),
-		SecondaryIngredients: uint64(rand.Intn(2) + 1),
+		MainIngredients:      uint64(rand.Intn(2) + 2),
+		SecondaryIngredients: uint64(rand.Intn(2) + 2),
 		Steps:                uint64(rand.Intn(4) + 3),
 	})
 	markdown, err := rctt.Markdown()

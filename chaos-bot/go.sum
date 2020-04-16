@@ -381,6 +381,7 @@ github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljT
 github.com/ultreme/histoire-pour-enfant-generator v0.0.0-20200402084311-66b2cd0d2da6 h1:ec2+ciMOdG9b7viGhJavwLdEtIk2KbqnCktO6auevoA=
 github.com/ultreme/histoire-pour-enfant-generator v0.0.0-20200402084311-66b2cd0d2da6/go.mod h1:ixbi47/Ul/g+KYhm50MxLQlYIqqT5bi2wqyUmC6OZEc=
 github.com/urfave/cli v1.22.1/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=
+github.com/urfave/cli v1.22.2/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasttemplate v1.0.1/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
 github.com/wellington/go-libsass v0.9.3-0.20181113175235-c63644206701/go.mod h1:mxgxgam0N0E+NAUMHLcu20Ccfc3mVpDkyrLDayqfiTs=
@@ -564,6 +565,8 @@ moul.io/godev v1.6.0 h1:ms1aI6o9k+PhmMdTR7Aw5iDHPu56xtnmrUgdfLKPspc=
 moul.io/godev v1.6.0/go.mod h1:5lgSpI1oH7xWpLl2Ew/Nsgk8DiNM6FzN9WV9+lgW8RQ=
 moul.io/moulsay v1.3.0 h1:7ZV4d2oQRuBH0M7NWKx41gG5edwXotMIgzZ2e1wgMMg=
 moul.io/moulsay v1.3.0/go.mod h1:m1Bd/M8JhWrsEaBBIRqwW0jgNPLectvU1vfHAv4WhFg=
+moul.io/number-to-words v0.6.0 h1:w5ZaDTFASB0v9SI6fedlwLs5DXnMl9Q7cMlMsatnIKg=
+moul.io/number-to-words v0.6.0/go.mod h1:y2h2Dy3ksovv3n7oHDypgxqCNc4X9COF0zM3jABnrnA=
 moul.io/pipotron v1.8.1-0.20200415135822-a4e92ad40968 h1:5yfaikO0962RM9L4jc5Dw4KJk+Y6tmOg1hhBJqBfylo=
 moul.io/pipotron v1.8.1-0.20200415135822-a4e92ad40968/go.mod h1:rJ2583VCJpb/uHiSB7VzGoSnrDw1m0Erd8PGgdJmDYc=
 moul.io/srand v1.4.0 h1:r5ZMiWDN0ni0lTV7KzJR/jx0K7GivJYW5WaXmufgeik=
