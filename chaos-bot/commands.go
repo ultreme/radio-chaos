@@ -42,6 +42,7 @@ func init() {
 		"!histoire-pour-enfant":    doHistoirePourEnfant,
 		"!moulsay":                 doMoulsay,
 		"!roulette":                doRoulette,
+		"!nombre":                  doNombre,
 		"!ntw":                     doNtw,
 	}
 	// FIXME: !pause 5min
@@ -147,6 +148,25 @@ func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	}
 	s.MessageReactionAdd(m.ChannelID, msg.ID, "😋")
 	s.MessageReactionAdd(m.ChannelID, msg.ID, "🤮")
+	return nil
+}
+
+func doNombre(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	content := strings.Split(m.Content, " ")
+	if len(content) < 3 {
+		s.ChannelMessageSend(m.ChannelID, "exemple: !nombre 1 100")
+		return nil
+	}
+	a, err := strconv.Atoi(content[1])
+	if err != nil {
+		return err
+	}
+	b, err := strconv.Atoi(content[2])
+	if err != nil {
+		return err
+	}
+	nbr := rand.Intn(b) + a
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d", nbr))
 	return nil
 }
 
