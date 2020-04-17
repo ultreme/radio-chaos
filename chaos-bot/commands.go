@@ -7,12 +7,15 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/gohugoio/hugo/common/maps"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	hpeg "github.com/ultreme/histoire-pour-enfant-generator"
 	yaml "gopkg.in/yaml.v2"
 	"moul.io/moulsay/moulsay"
@@ -38,6 +41,7 @@ func init() {
 		"!recettator":              doRecettator,
 		"!histoire-pour-enfant":    doHistoirePourEnfant,
 		"!moulsay":                 doMoulsay,
+		"!roulette":                doRoulette,
 		"!ntw":                     doNtw,
 	}
 	// FIXME: !pause 5min
@@ -143,6 +147,33 @@ func doRecettator(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	}
 	s.MessageReactionAdd(m.ChannelID, msg.ID, "😋")
 	s.MessageReactionAdd(m.ChannelID, msg.ID, "🤮")
+	return nil
+}
+
+func doRoulette(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	os.MkdirAll("data", 0777)
+	db, err := gorm.Open("sqlite3", "data/roulette.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	type roulette struct {
+		gorm.Model
+		Count int
+	}
+	if err := db.AutoMigrate(&roulette{}).Error; err != nil {
+		return err
+	}
+	var entry roulette
+	db.First(&entry)
+	if entry.Count == 0 {
+		entry.Count = rand.Intn(6) + 1
+		s.ChannelMessageSend(m.ChannelID, "**BANG!**")
+	} else {
+		entry.Count--
+		s.ChannelMessageSend(m.ChannelID, "* **click** *")
+	}
+	db.Save(&entry)
 	return nil
 }
 
