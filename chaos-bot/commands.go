@@ -24,6 +24,7 @@ import (
 	"moul.io/pipotron/dict"
 	"moul.io/pipotron/pipotron"
 	"ultre.me/recettator"
+	"ultre.me/smsify/smsify"
 )
 
 type commandFunc func(s *discordgo.Session, m *discordgo.MessageCreate) error
@@ -44,6 +45,7 @@ func init() {
 		"!moulsay":                 doMoulsay,
 		"!roulette":                doRoulette,
 		"!nombre":                  doNombre,
+		"!smsify":                  doSmsify,
 		"!ntw":                     doNtw,
 		"!tpyo":                    doTpyo,
 	}
@@ -169,6 +171,13 @@ func doNombre(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	}
 	nbr := rand.Intn(b) + a
 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d", nbr))
+	return nil
+}
+
+func doSmsify(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	content := strings.Join(strings.Split(m.Content, " ")[1:], " ")
+	msg := smsify.Smsify(content)
+	s.ChannelMessageSend(m.ChannelID, msg)
 	return nil
 }
 
