@@ -16,6 +16,7 @@ import (
 	"github.com/gohugoio/hugo/common/maps"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	tpyo "github.com/tpyolang/tpyo-cli"
 	hpeg "github.com/ultreme/histoire-pour-enfant-generator"
 	yaml "gopkg.in/yaml.v2"
 	"moul.io/moulsay/moulsay"
@@ -44,6 +45,7 @@ func init() {
 		"!roulette":                doRoulette,
 		"!nombre":                  doNombre,
 		"!ntw":                     doNtw,
+		"!tpyo":                    doTpyo,
 	}
 	// FIXME: !pause 5min
 	// FIXME: !pipotron
@@ -167,6 +169,14 @@ func doNombre(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	}
 	nbr := rand.Intn(b) + a
 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d", nbr))
+	return nil
+}
+
+func doTpyo(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	content := strings.Join(strings.Split(m.Content, " ")[1:], " ")
+	tpyo := tpyo.NewTpyo()
+	msg := tpyo.Enocde(content)
+	s.ChannelMessageSend(m.ChannelID, msg)
 	return nil
 }
 

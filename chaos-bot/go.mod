@@ -17,6 +17,7 @@ require (
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/sirupsen/logrus v1.5.0 // indirect
+	github.com/tpyolang/tpyo-cli v1.0.0
 	github.com/ultreme/histoire-pour-enfant-generator v0.0.0-20200402084311-66b2cd0d2da6
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904 // indirect
 	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
