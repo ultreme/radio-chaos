@@ -72,7 +72,7 @@ func init() {
 	//
 	// pipotron
 	//
-	dicts := []string{"proverbe-africain", "marabout", "reve", "whatsapp-message-in-case-of-pandemic", "question-baleze-raw", "prenom-compose", "moijaime", "insulte-mignone", "horoscope", "fuu", "excuse-a-2-balles", "bingo-winner", "asv", "accords", "project-idea", "compliment", "blague", "complot"}
+	dicts := []string{"proverbe-africain", "marabout", "reve", "whatsapp-message-in-case-of-pandemic", "question-baleze-raw", "prenom-compose", "moijaime", "insulte-mignone", "horoscope", "fuu", "excuse-a-2-balles", "bingo-winner", "asv", "accords", "project-idea", "compliment", "blague", "complot", "popular-science-bestseller-title"}
 	//fmt.Println(godev.PrettyJSON(dict.Box.List()))
 	for _, dictName := range dicts {
 		commands["!"+dictName] = genericPipotron(dictName)
