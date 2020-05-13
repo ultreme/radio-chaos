@@ -26,7 +26,7 @@ require (
 	moul.io/godev v1.6.0
 	moul.io/moulsay v1.3.0
 	moul.io/number-to-words v0.6.0
-	moul.io/pipotron v1.11.0
+	moul.io/pipotron v1.11.1
 	ultre.me/recettator v0.4.0
 	ultre.me/smsify v1.0.0
 )
