@@ -4,10 +4,10 @@ go 1.14
 
 require (
 	github.com/bwmarrin/discordgo v0.20.3
-	github.com/gohugoio/hugo v0.70.0
+	github.com/gohugoio/hugo v0.72.0
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/graarh/golang-socketio v0.0.0-20170510162725-2c44953b9b5f
-	github.com/hako/durafmt v0.0.0-20191009132224-3f39dc1ed9f4
+	github.com/hako/durafmt v0.0.0-20200605151348-3a43fc422dd9
 	github.com/huandu/xstrings v1.3.1 // indirect
 	github.com/imdario/mergo v0.3.9 // indirect
 	github.com/jinzhu/gorm v1.9.12
