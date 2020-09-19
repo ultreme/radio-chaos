@@ -3,14 +3,13 @@ module ultre.me/radio-chaos/chaos-bot
 go 1.14
 
 require (
-	github.com/bwmarrin/discordgo v0.21.1
-	github.com/gohugoio/hugo v0.74.3
-	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/bwmarrin/discordgo v0.22.0
+	github.com/gohugoio/hugo v0.75.1
 	github.com/graarh/golang-socketio v0.0.0-20170510162725-2c44953b9b5f
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/huandu/xstrings v1.3.1 // indirect
 	github.com/imdario/mergo v0.3.9 // indirect
-	github.com/jinzhu/gorm v1.9.15
+	github.com/jinzhu/gorm v1.9.16
 	github.com/karrick/godirwalk v1.15.6 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/oklog/run v1.1.0
@@ -22,7 +21,7 @@ require (
 	golang.org/x/sys v0.0.0-20200513112337-417ce2331b5c // indirect
 	gopkg.in/yaml.v2 v2.3.0
 	gopkg.in/yaml.v3 v3.0.0-20200506231410-2ff61e1afc86 // indirect
-	moul.io/godev v1.6.0
+	moul.io/godev v1.7.0
 	moul.io/moulsay v1.3.0
 	moul.io/number-to-words v0.6.0
 	moul.io/pipotron v1.11.2
