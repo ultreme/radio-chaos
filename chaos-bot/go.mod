@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/bwmarrin/discordgo v0.22.0
-	github.com/gohugoio/hugo v0.78.0
+	github.com/gohugoio/hugo v0.78.1
 	github.com/graarh/golang-socketio v0.0.0-20170510162725-2c44953b9b5f
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/huandu/xstrings v1.3.1 // indirect
