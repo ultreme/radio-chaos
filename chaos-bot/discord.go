@@ -2,40 +2,57 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net"
+	"net/http"
 	"os"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/etherlabsio/errors"
+	"github.com/etherlabsio/pkg/httputil"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/httplog"
 	gosocketio "github.com/graarh/golang-socketio"
 	"github.com/hako/durafmt"
 	"github.com/oklog/run"
+	"github.com/rs/cors"
 	"moul.io/godev"
 )
 
-func discordBotCmd(token string, devMode bool, debug bool) error {
-	log.Printf("starting bot, devMode=%v, debug=%v", devMode, debug)
+type discordbotOpts struct {
+	devMode        bool
+	debug          bool
+	manfredChannel string
+	discordToken   string
+	serverBind     string
+}
 
-	var db *discordBot
-	var dg *discordgo.Session
+func discordBotCmd(opts discordbotOpts) error {
+	log.Printf("starting bot, args=%s", godev.PrettyJSON(opts))
+
+	db := &discordBot{
+		startedAt: time.Now(),
+		opts:      opts,
+	}
+
+	var g run.Group
+
 	{ // DISCORD
-		var err error
-		dg, err = discordgo.New("Bot " + token)
+		dg, err := discordgo.New("Bot " + opts.discordToken)
 		if err != nil {
 			return err
 		}
 
 		hostname, _ := os.Hostname()
-		dg.ChannelMessageSend(manfredChannel, fmt.Sprintf("**COUCOU JE VIENS DE BOOT (%s)!**", hostname))
+		dg.ChannelMessageSend(opts.manfredChannel, fmt.Sprintf("**COUCOU JE VIENS DE BOOT (%s)!**", hostname))
 
-		db = &discordBot{
-			startedAt: time.Now(),
-			devMode:   devMode,
-			debug:     debug,
-		}
+		db.discordSession = dg
 		commands["!info"] = db.doInfo
 		commands["!radiosay"] = db.doRadioSay
 
@@ -45,6 +62,7 @@ func discordBotCmd(token string, devMode bool, debug bool) error {
 			return err
 		}
 		defer dg.Close()
+		log.Print("Discord bot started")
 	}
 
 	{ // SOCKET IO
@@ -55,57 +73,116 @@ func discordBotCmd(token string, devMode bool, debug bool) error {
 		defer sio.Close()
 
 		sio.c.On("event:join", func(h *gosocketio.Channel, args Message) {
-			dg.ChannelMessageSend(manfredChannel, fmt.Sprintf("sio event:join: %s", godev.JSON(args)))
+			db.discordSession.ChannelMessageSend(opts.manfredChannel, fmt.Sprintf("sio event:join: %s", godev.JSON(args)))
 		})
 		sio.c.On("event:disconnect", func(h *gosocketio.Channel, args Message) {
-			dg.ChannelMessageSend(manfredChannel, fmt.Sprintf("sio event:disconnect: %s", godev.JSON(args)))
+			db.discordSession.ChannelMessageSend(opts.manfredChannel, fmt.Sprintf("sio event:disconnect: %s", godev.JSON(args)))
 		})
 		sio.c.On("event:broadcast", func(h *gosocketio.Channel, args Message) {
-			dg.ChannelMessageSend(manfredChannel, fmt.Sprintf("sio event:broadcast: %s", godev.JSON(args)))
+			db.discordSession.ChannelMessageSend(opts.manfredChannel, fmt.Sprintf("sio event:broadcast: %s", godev.JSON(args)))
 		})
 		db.sio = sio
+		log.Print("Socket.IO client started")
 	}
 
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
-	var g run.Group
+	{ // HTTP API
+		r := chi.NewRouter()
+		//r.Use(middleware.DefaultCompress)
+		r.Use(middleware.StripSlashes)
+		r.Use(middleware.Recoverer)
+		r.Use(cors.New(cors.Options{
+			AllowedOrigins: []string{"*"},
+			AllowedMethods: []string{"GET", "POST", "OPTIONS"},
+		}).Handler)
+		logger := httplog.NewLogger("http", httplog.Options{JSON: false})
+		r.Use(httplog.RequestLogger(logger))
+		//r.Use(middleware.Heartbeat("/ping"))
+
+		httpStatusCodeFrom := func(err error) int {
+			switch errors.KindOf(err) {
+			case errors.Invalid:
+				return http.StatusBadRequest
+			case errors.Internal:
+				return http.StatusInternalServerError
+			default:
+				return http.StatusOK
+			}
+		}
+		httpErrorEncoder := httputil.JSONErrorEncoder(httpStatusCodeFrom)
+		httpJSONResponseEncoder := httputil.EncodeJSONResponse(httpErrorEncoder)
+
+		r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			resp := struct {
+				Pong string `json:"pong"`
+			}{
+				Pong: "pong",
+			}
+			httpJSONResponseEncoder(ctx, w, resp)
+		})
+
+		r.Post("/ping-manfred", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			resp := struct {
+				Msg string `json:"msg"`
+			}{}
+			json.NewDecoder(r.Body).Decode(&resp)
+			db.discordSession.ChannelMessageSend(opts.manfredChannel, fmt.Sprintf("HTTP ping: %q", resp.Msg))
+			httpJSONResponseEncoder(ctx, w, resp)
+		})
+
+		httpListener, err := net.Listen("tcp", db.opts.serverBind)
+		if err != nil {
+			return err
+		}
+		g.Add(func() error {
+			return http.Serve(httpListener, r)
+		}, func(error) {
+			httpListener.Close()
+		})
+
+		log.Printf("HTTP API started (%q)", db.opts.serverBind)
+	}
+
 	g.Add(run.SignalHandler(context.TODO(), os.Interrupt))
+	log.Print("Press ctrl-C to exit")
 	return g.Run()
 }
 
 type discordBot struct {
-	startedAt    time.Time
-	seenMessages int
-	seenCommands int
-	seenErrors   int
-	devMode      bool
-	debug        bool
-	lock         sync.Mutex
-	sio          *sioClient
+	startedAt      time.Time
+	seenMessages   int
+	seenCommands   int
+	seenErrors     int
+	discordSession *discordgo.Session
+	lock           sync.Mutex
+	sio            *sioClient
+	opts           discordbotOpts
 }
 
-func (b *discordBot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (db *discordBot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// avoid loop
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	if b.debug {
+	if db.opts.debug {
 		log.Println(godev.JSON(m))
 	}
-	if b.devMode && m.GuildID != "" {
+	if db.opts.devMode && m.GuildID != "" {
 		return
 	}
 
 	args := strings.Split(m.Content, " ")
 
-	b.seenMessages++
+	db.seenMessages++
 	command, found := commands[args[0]] // FIXME: split the content and support args
 	if !found || command == nil {
 		return
 	}
-	b.seenCommands++
+	db.seenCommands++
 
-	b.lock.Lock()
-	defer b.lock.Unlock()
+	db.lock.Lock()
+	defer db.lock.Unlock()
 
 	channel := m.ChannelID
 	if m.GuildID == "" {
@@ -120,12 +197,12 @@ func (b *discordBot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageC
 	}()
 	err := command(s, m)
 	if err != nil {
-		b.seenErrors++
+		db.seenErrors++
 		sendError(s, m, err)
 	}
 }
 
-func (b *discordBot) doRadioSay(s *discordgo.Session, m *discordgo.MessageCreate) error {
+func (db *discordBot) doRadioSay(s *discordgo.Session, m *discordgo.MessageCreate) error {
 	content := strings.Split(m.Content, " ")
 	say := strings.Join(content[1:], " ")
 	say = strings.TrimSpace(say)
@@ -142,14 +219,14 @@ func (b *discordBot) doRadioSay(s *discordgo.Session, m *discordgo.MessageCreate
 			}.ToJSON(),
 		},
 	}
-	return b.sio.c.Emit("broadcast", input)
+	return db.sio.c.Emit("broadcast", input)
 }
 
-func (b *discordBot) doInfo(s *discordgo.Session, m *discordgo.MessageCreate) error {
-	uptime := time.Since(b.startedAt)
+func (db *discordBot) doInfo(s *discordgo.Session, m *discordgo.MessageCreate) error {
+	uptime := time.Since(db.startedAt)
 	msg := fmt.Sprintf(
 		"uptime: %v, messages: %d, commands: %d, errors: %d\n",
-		durafmt.ParseShort(uptime).String(), b.seenMessages, b.seenCommands, b.seenErrors,
+		durafmt.ParseShort(uptime).String(), db.seenMessages, db.seenCommands, db.seenErrors,
 	)
 	msg += fmt.Sprintf("source: https://github.com/ultreme/radio-chaos/tree/master/chaos-bot")
 	s.ChannelMessageSend(m.ChannelID, msg)
