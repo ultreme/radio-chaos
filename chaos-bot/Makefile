@@ -6,7 +6,7 @@ export sed 's/=.*//' .env
 COMPILEDAEMON_OPTIONS ?= -exclude-dir=.git -color=true -build=go\ install -build-dir=.
 run:
 	go install github.com/githubnemo/CompileDaemon
-	CompileDaemon $(COMPILEDAEMON_OPTIONS) -command="chaos-bot $(RUN_OPTS) discord-bot -discord-token=$(DISCORD_TOKEN)"
+	CompileDaemon $(COMPILEDAEMON_OPTIONS) -command="chaos-bot $(RUN_OPTS) discord-bot -discord-token=$(DISCORD_TOKEN) -manfred-channel=$(MANFRED_CHANNEL)"
 .PHONY: run
 
 install-run: install

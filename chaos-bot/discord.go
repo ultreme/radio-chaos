@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -117,6 +118,16 @@ func discordBotCmd(opts discordbotOpts) error {
 			}{
 				Pong: "pong",
 			}
+			httpJSONResponseEncoder(ctx, w, resp)
+		})
+
+		r.Post("/ping-manfred", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			resp := struct {
+				Msg string `json:"msg"`
+			}{}
+			json.NewDecoder(r.Body).Decode(&resp)
+			db.discordSession.ChannelMessageSend(opts.manfredChannel, fmt.Sprintf("HTTP ping: %q", resp.Msg))
 			httpJSONResponseEncoder(ctx, w, resp)
 		})
 
