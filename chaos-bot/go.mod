@@ -4,6 +4,10 @@ go 1.14
 
 require (
 	github.com/bwmarrin/discordgo v0.22.0
+	github.com/etherlabsio/errors v0.2.3
+	github.com/etherlabsio/pkg v0.0.0-20191020161600-58998d98f9ce
+	github.com/go-chi/chi v1.5.1
+	github.com/go-chi/httplog v0.1.8
 	github.com/gohugoio/hugo v0.79.1
 	github.com/graarh/golang-socketio v0.0.0-20170510162725-2c44953b9b5f
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
@@ -14,6 +18,7 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff/v3 v3.0.0
+	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/tpyolang/tpyo-cli v1.0.0
 	github.com/ultreme/histoire-pour-enfant-generator v0.0.0-20200402084311-66b2cd0d2da6
