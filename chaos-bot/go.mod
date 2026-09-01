@@ -8,7 +8,7 @@ require (
 	github.com/etherlabsio/pkg v0.0.0-20191020161600-58998d98f9ce
 	github.com/go-chi/chi v1.5.1
 	github.com/go-chi/httplog v0.1.8
-	github.com/gohugoio/hugo v0.79.1
+	github.com/gohugoio/hugo v0.163.3
 	github.com/graarh/golang-socketio v0.0.0-20170510162725-2c44953b9b5f
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/huandu/xstrings v1.3.1 // indirect
